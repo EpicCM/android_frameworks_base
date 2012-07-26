@@ -361,7 +361,7 @@ public class SamsungRIL extends RIL implements CommandsInterface {
         case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST: ret = responseVoid(p); break;
         case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_2: ret = responseVoid(p); break;
         case RIL_UNSOL_AM: ret = responseString(p); break;
-
+	case RIL_UNSOL_RIL_CONNECTED: ret = responseInts(p); break;
         default:
             // Rewind the Parcel
             p.setDataPosition(dataPosition);
@@ -463,6 +463,17 @@ public class SamsungRIL extends RIL implements CommandsInterface {
                 Log.e(LOG_TAG, "am " + amString + " could not be executed.");
             }
             break;
+	case RIL_UNSOL_RIL_CONNECTED: {
+                if (RILJ_LOGD) unsljLogRet(response, ret);
+
+                // Initial conditions
+                setRadioPower(false, null);
+                setPreferredNetworkType(mPreferredNetworkType, null);
+                setCdmaSubscriptionSource(mCdmaSubscription, null);
+		// already called by samsung's ril blobs
+                //notifyRegistrantsRilConnectionChanged(((int[])ret)[0]);
+                break;
+            }
         }
     }
 
